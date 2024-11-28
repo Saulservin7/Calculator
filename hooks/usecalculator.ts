@@ -13,26 +13,27 @@ export const useCalculator = () => {
     const [prevNum, setPrevNum] = useState('0')
     const [num, setNum] = useState('0')
 
-    useEffect(() => {
-        setFormula(num)
-    },
-        [num]
-   ) 
+  
 
     useEffect(() => {
-        if(lastOperation.current){
+        if (lastOperation.current) {
             const firstPart = formula.split(' ').at(0);
-            
-            setFormula(`${firstPart } ${lastOperation.current} ${num}`)
+
+            setFormula(`${firstPart} ${lastOperation.current} ${num}`)
         }
-        else{
+        else {
             setFormula(num);
         }
     },
         [num]
     )
 
-    
+    useEffect(() => {
+        const subResult = calculateSubResult()
+        setPrevNum(`${subResult}`)
+    }, [formula])
+
+
 
     const lastOperation = useRef<Operator>()
 
@@ -63,7 +64,7 @@ export const useCalculator = () => {
         setNum(num + number);
     };
     const clean = () => {
-        lastOperation.current=undefined
+        lastOperation.current = undefined
         setFormula('0')
         setNum('0')
         setPrevNum('0')
@@ -77,6 +78,7 @@ export const useCalculator = () => {
     }
 
     const setLastNumber = () => {
+        calculateResult();
         if (num.endsWith('.')) {
             setPrevNum(num.slice(0, -1));
         } else {
@@ -90,6 +92,7 @@ export const useCalculator = () => {
         lastOperation.current = Operator.divide;
     }
     const addOperation = () => {
+        
         setLastNumber();
         lastOperation.current = Operator.add;
     }
@@ -100,6 +103,36 @@ export const useCalculator = () => {
     const subtractOperation = () => {
         setLastNumber();
         lastOperation.current = Operator.subtract;
+    }
+
+    const calculateSubResult = () => {
+        const [firstValue, operator, secondValue] = formula.split(' ')
+
+        const num1 = Number(firstValue);
+        const num2 = Number(secondValue);
+
+        console.log (formula)
+
+        if(isNaN(num2)) return num1;
+
+        switch (operator) {
+            case Operator.add: return num1 + num2;
+            case Operator.subtract: return num1 - num2;
+            case Operator.multiply: return num1 * num2;
+            case Operator.divide: return num1 / num2;
+
+            default: console.log('Error')
+
+        }
+
+    }
+
+    const calculateResult=()=>{
+        const finalResult = calculateSubResult();
+        setPrevNum('')
+        setFormula(`${finalResult}`)
+        lastOperation.current=undefined
+        
     }
 
 
@@ -113,7 +146,8 @@ export const useCalculator = () => {
         setLastNumber,
         multiplyOperation,
         subtractOperation,
-        addOperation
+        addOperation,
+        calculateResult
 
 
     };

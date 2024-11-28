@@ -8,13 +8,17 @@ import { useCalculator } from '@/hooks/usecalculator'
 
 export default function CalculatorApp() {
 
-    const {buildNumber,prevNum,formula,setLastNumber,num,clean,changeSign,divideOperation,multiplyOperation,addOperation,subtractOperation}=useCalculator();
+    const {buildNumber,prevNum,formula,calculateResult,clean,changeSign,divideOperation,multiplyOperation,addOperation,subtractOperation}=useCalculator();
 
   return (
     <View style={globalStyles.calculatorContainer}>
       
       <ThemeText variant='h1'>{formula}</ThemeText>
-      <ThemeText variant='h2'>{prevNum}</ThemeText>
+      {formula === prevNum ? (
+          <ThemeText variant="h2"> </ThemeText>
+        ) : (
+          <ThemeText variant="h2">{prevNum}</ThemeText>
+        )}
 
      <View style={globalStyles.buttonRow}>
       <ThemeButton onPress={()=>{clean()}} label='AC' color={Colors.lightGray}></ThemeButton>      
@@ -43,7 +47,7 @@ export default function CalculatorApp() {
      <View style={globalStyles.buttonRow}>
       <ThemeButton onPress={()=>{buildNumber('0')}}label='0' doubleSize color={Colors.lightGray}></ThemeButton>      
       <ThemeButton onPress={()=>{buildNumber('.')}}label='.' color={Colors.lightGray}></ThemeButton>      
-      <ThemeButton onPress={()=>{buildNumber('=')}}label='=' color={Colors.orange}></ThemeButton>        
+      <ThemeButton onPress={()=>{calculateResult()}}label='=' color={Colors.orange}></ThemeButton>        
     </View> 
     
     </View>
